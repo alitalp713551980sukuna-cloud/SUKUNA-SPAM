@@ -3,6 +3,7 @@ import asyncio
 import json
 import sys
 import os
+import subprocess
 
 # Colors
 G = '\033[1;32m' # Green
@@ -13,6 +14,17 @@ W = '\033[1;37m' # White
 
 def clear():
     os.system('clear' if os.name == 'posix' else 'cls')
+
+def auto_update():
+    """هذه الدالة تسحب التحديثات من جيت هب تلقائياً"""
+    try:
+        # التأكد من وجود مجلد .git لتنفيذ التحديث
+        if os.path.exists(".git"):
+            print(f"{C}[*] Checking for updates from King Ali...")
+            # سحب التحديثات بصمت
+            subprocess.run(["git", "pull"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    except Exception:
+        pass
 
 def banner():
     clear()
@@ -26,6 +38,9 @@ def banner():
  ---------------------------------------""")
 
 async def __HemoCaller__():
+    # تشغيل التحديث التلقائي أول شيء
+    auto_update()
+    
     while True:
         banner()
         # Password System
@@ -47,9 +62,9 @@ async def __HemoCaller__():
             print(f"{G}👑 This is my Master: Ali Talib 👑")
             print(f"{R}Don't play with fire, little curse... 👹")
             await asyncio.sleep(4)
-            continue # Returns to ask for the number again
+            continue 
 
-        _2Call = target # Use the input as the number
+        _2Call = target
         
         headers = {
             'User-Agent': "okxgvhttp/4.12.0",
